@@ -1,0 +1,294 @@
+{
+  "name": "review-comments",
+  "displayName": "Review Comments",
+  "description": "Collect review comments across files, then hand them all to an AI agent at once.",
+  "version": "0.2.0",
+  "publisher": "NinadKale",
+  "license": "MIT",
+  "icon": "icon.png",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "review",
+    "comments",
+    "ai",
+    "claude",
+    "copilot",
+    "annotate"
+  ],
+  "galleryBanner": {
+    "color": "#1e1e2e",
+    "theme": "dark"
+  },
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "reviewComments",
+          "title": "Review Comments",
+          "icon": "$(comment-discussion)"
+        }
+      ]
+    },
+    "views": {
+      "reviewComments": [
+        {
+          "id": "reviewComments.tree",
+          "name": "Sessions"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "reviewComments.add",
+        "title": "Review: Add Comment",
+        "icon": "$(comment-add)"
+      },
+      {
+        "command": "reviewComments.copyPrompt",
+        "title": "Review: Copy Prompt for AI",
+        "icon": "$(clippy)"
+      },
+      {
+        "command": "reviewComments.newSession",
+        "title": "Review: New Session",
+        "icon": "$(add)"
+      },
+      {
+        "command": "reviewComments.completeSession",
+        "title": "Archive Session",
+        "icon": "$(archive)"
+      },
+      {
+        "command": "reviewComments.renameSession",
+        "title": "Rename Session"
+      },
+      {
+        "command": "reviewComments.deleteSession",
+        "title": "Delete Session"
+      },
+      {
+        "command": "reviewComments.reopenSession",
+        "title": "Reopen Session"
+      },
+      {
+        "command": "reviewComments.clearComments",
+        "title": "Clear All Comments"
+      },
+      {
+        "command": "reviewComments.deleteComment",
+        "title": "Delete",
+        "icon": "$(trash)"
+      },
+      {
+        "command": "reviewComments.editComment",
+        "title": "Edit",
+        "icon": "$(edit)"
+      },
+      {
+        "command": "reviewComments.jumpTo",
+        "title": "Go to Comment"
+      },
+      {
+        "command": "reviewComments.refresh",
+        "title": "Refresh",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "reviewComments.submitDraft",
+        "title": "Save Comment",
+        "icon": "$(check)"
+      },
+      {
+        "command": "reviewComments.cancelDraft",
+        "title": "Cancel",
+        "icon": "$(close)"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "reviewComments.copyPrompt",
+          "when": "view == reviewComments.tree",
+          "group": "navigation@1"
+        },
+        {
+          "command": "reviewComments.newSession",
+          "when": "view == reviewComments.tree",
+          "group": "navigation@2"
+        },
+        {
+          "command": "reviewComments.refresh",
+          "when": "view == reviewComments.tree",
+          "group": "navigation@3"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "reviewComments.completeSession",
+          "when": "view == reviewComments.tree && viewItem == activeSession",
+          "group": "inline@1"
+        },
+        {
+          "command": "reviewComments.renameSession",
+          "when": "view == reviewComments.tree && viewItem =~ /Session$/",
+          "group": "1_edit@1"
+        },
+        {
+          "command": "reviewComments.clearComments",
+          "when": "view == reviewComments.tree && viewItem == activeSession",
+          "group": "1_edit@2"
+        },
+        {
+          "command": "reviewComments.reopenSession",
+          "when": "view == reviewComments.tree && viewItem == pastSession",
+          "group": "1_edit@1"
+        },
+        {
+          "command": "reviewComments.deleteSession",
+          "when": "view == reviewComments.tree && viewItem =~ /Session$/",
+          "group": "9_danger@1"
+        },
+        {
+          "command": "reviewComments.editComment",
+          "when": "view == reviewComments.tree && viewItem == comment",
+          "group": "inline@1"
+        },
+        {
+          "command": "reviewComments.deleteComment",
+          "when": "view == reviewComments.tree && viewItem == comment",
+          "group": "inline@2"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "reviewComments.add",
+          "when": "editorHasSelection",
+          "group": "1_review@1"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "reviewComments.cancelDraft",
+          "when": "false"
+        },
+        {
+          "command": "reviewComments.clearComments",
+          "when": "false"
+        },
+        {
+          "command": "reviewComments.completeSession",
+          "when": "false"
+        },
+        {
+          "command": "reviewComments.deleteComment",
+          "when": "false"
+        },
+        {
+          "command": "reviewComments.deleteSession",
+          "when": "false"
+        },
+        {
+          "command": "reviewComments.editComment",
+          "when": "false"
+        },
+        {
+          "command": "reviewComments.jumpTo",
+          "when": "false"
+        },
+        {
+          "command": "reviewComments.refresh",
+          "when": "false"
+        },
+        {
+          "command": "reviewComments.renameSession",
+          "when": "false"
+        },
+        {
+          "command": "reviewComments.reopenSession",
+          "when": "false"
+        },
+        {
+          "command": "reviewComments.submitDraft",
+          "when": "false"
+        }
+      ],
+      "comments/commentThread/context": [
+        {
+          "command": "reviewComments.submitDraft",
+          "when": "commentController == reviewCommentsInput",
+          "group": "inline@1"
+        },
+        {
+          "command": "reviewComments.cancelDraft",
+          "when": "commentController == reviewCommentsInput",
+          "group": "inline@2"
+        }
+      ],
+      "comments/commentThread/title": [
+        {
+          "command": "reviewComments.cancelDraft",
+          "when": "commentController == reviewCommentsInput",
+          "group": "inline@1"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "reviewComments.add",
+        "key": "ctrl+k c",
+        "mac": "cmd+k c",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "reviewComments.copyPrompt",
+        "key": "ctrl+k ctrl+r",
+        "mac": "cmd+k cmd+r"
+      }
+    ],
+    "configuration": {
+      "title": "Review Comments",
+      "properties": {
+        "reviewComments.showStatusBar": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show the comment count in the status bar."
+        },
+        "reviewComments.promptHeader": {
+          "type": "string",
+          "default": "Address each comment independently. If a comment is mistaken, say so rather than making the change.",
+          "description": "Instruction line included at the top of the generated prompt."
+        }
+      }
+    },
+    "configurationDefaults": {
+      "comments.openPanel": "neverOpen"
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p .",
+    "vscode:prepublish": "tsc -p .",
+    "package": "vsce package --no-dependencies"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.85.0",
+    "typescript": "^5.4.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ninadkale98/review-comments"
+  },
+  "homepage": "https://github.com/ninadkale98/review-comments#readme",
+  "bugs": {
+    "url": "https://github.com/ninadkale98/review-comments/issues"
+  }
+}
